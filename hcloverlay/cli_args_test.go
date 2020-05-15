@@ -159,6 +159,34 @@ func TestParseCLIArgument(t *testing.T) {
 			},
 			``,
 		},
+		"create new block with not enough labels": {
+			`
+			block "foo" "a" { foo = "a" }
+			`,
+			`block.foo=b`,
+			&struct {
+				Block []BlockTwoLabels `hcl:"block,block"`
+			}{
+				Block: []BlockTwoLabels{
+					{Type: "foo", Name: "a", Foo: "a"},
+				},
+			},
+			`Unexpected argument "block.foo".`,
+		},
+		"create new block with unexpected nested argument": {
+			`
+			block "foo" "a" { foo = "a" }
+			`,
+			`block.foo.b.nope=b`,
+			&struct {
+				Block []BlockTwoLabels `hcl:"block,block"`
+			}{
+				Block: []BlockTwoLabels{
+					{Type: "foo", Name: "a", Foo: "a"},
+				},
+			},
+			`Unexpected argument "block.foo.b.nope".`,
+		},
 	}
 
 	for name, test := range tests {
