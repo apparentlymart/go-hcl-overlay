@@ -126,6 +126,7 @@ func ExtractCLIOptions(args []string, schema *hcl.BodySchema) ([]Overlay, []stri
 			}
 		}
 		if !matched {
+			remain = append(remain, arg)
 			continue
 		}
 		o, moreDiags := ParseCLIArgument(raw)
@@ -135,7 +136,7 @@ func ExtractCLIOptions(args []string, schema *hcl.BodySchema) ([]Overlay, []stri
 		}
 	}
 
-	return overlays, args, diags
+	return overlays, remain, diags
 }
 
 type cliArgOverlay struct {
